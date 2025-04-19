@@ -1,3 +1,8 @@
+/**
+ * 
+ * @param {string} Classname 
+ * @returns {HTMLDivElement}
+ */
 const divmaker = (Classname) =>{
     const div = document.createElement("div");
     div.className = Classname;
