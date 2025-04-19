@@ -35,5 +35,42 @@ tableRegular.appendChild(tbody);
 
 const formDiv = divmaker("form");
 
+const formRegular = document.createElement('form');
+formDiv.appendChild(formRegular) 
+
+const fieldElementList = [{
+    fieldid: 'szerzo',
+    fieldLabel: 'Szerző'
+},
+{
+    fieldid: 'mufaj',
+    fieldLabel: 'Műfaj'
+},
+{
+    fieldid: 'cim',
+    fieldLabel: 'Cím'
+}]
+ 
+for(const fieldElement of fieldElementList){
+    const field = divmaker('field');
+    formRegular.appendChild(field);
+
+    const label = document.createElement('label');
+    label.htmlFor = fieldElement.fieldid;
+    label.textContent = fieldElement.fieldLabel;
+    field.appendChild(label)
+ 
+    const input = document.createElement('input');
+    input.id = fieldElement.fieldid;
+ 
+    field.appendChild(document.createElement('br'))
+
+    field.appendChild(input)
+}
+ 
+const buttonFormRefular = document.createElement('button');
+buttonFormRefular.textContent = 'hozzáadás';
+formRegular.appendChild(buttonFormRefular)
+
 containerDiv.appendChild(tableDiv);
 containerDiv.appendChild(formDiv);
