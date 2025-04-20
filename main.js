@@ -116,3 +116,48 @@ formRegular.addEventListener('submit', (e)=> {
 
 containerDiv.appendChild(tableDiv);
 containerDiv.appendChild(formDiv);
+
+const input = document.createElement('input')
+containerDiv.appendChild(input);
+input.id='fileinput'
+input.type = 'file';
+
+input.addEventListener('change', (e) => {
+
+    const file = e.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = () => {
+       const Lines = reader.result.split('\n')
+       const headerRemoved = Lines.slice(1);
+
+       for(const line of headerRemoved){
+            const timmed = line.trim();
+            const fields = timmed.split(';');
+            const alkotasok = {
+                szerzo: fields[0],
+                mufaj: fields[2],
+                cim: fields[1]
+            }
+
+            tomb.push(alkotasok);
+
+            const tr = document.createElement('tr');
+            tbody.appendChild(tr);
+
+            const szerzo = document.createElement('td');
+            szerzo.textContent = alkotasok.szerzo;
+            tr.appendChild(szerzo);
+
+            const mufaj = document.createElement('td');
+            mufaj.textContent = alkotasok.mufaj;
+            tr.appendChild(mufaj);
+ 
+            const cim = document.createElement('td');
+            cim.textContent = alkotasok.cim;
+            tr.appendChild(cim);
+       }
+    }
+    reader.readAsText(file);
+})
+
