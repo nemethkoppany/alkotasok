@@ -10,6 +10,22 @@ const divmaker = (Classname) =>{
     return div;
 }
 
+/**
+ * 
+ * @param {AlkotasData[]} alkotasArray 
+ * @param {Function{AlkotasData}:boolean} callback 
+ * @returns {AlkotasData[]}
+ */
+const filter = (alkotasArray, callback) => {
+    const result_array = [];
+    for(const element of alkotasArray){
+        if(callback(element)){
+            result_array.push(element);
+        }
+    }
+    return result_array;
+}
+
 const containerDiv = divmaker("container");
 document.body.appendChild(containerDiv);
 const tableDiv = divmaker("table");
@@ -97,6 +113,7 @@ formRegular.addEventListener('submit', (e)=> {
    
     if(isValid){
         tomb.push(contentObject);
+        originalArrayFill();
         const tr = document.createElement('tr');
         tbody.appendChild(tr);
      
@@ -156,6 +173,7 @@ input.addEventListener('change', (e) => {
             const cim = document.createElement('td');
             cim.textContent = alkotasok.cim;
             tr.appendChild(cim);
+            originalArrayFill();
        }
     }
     reader.readAsText(file);
@@ -179,3 +197,92 @@ downloadButton.addEventListener('click', () => {
     URL.revokeObjectURL(link.href);
 });
 
+const sortFormDiv = divmaker('sortForm');
+containerDiv.appendChild(sortFormDiv);
+
+const sortForm = document.createElement('form');
+sortFormDiv.appendChild(sortForm);
+
+const sortSelect = document.createElement('select');
+sortForm.appendChild(sortSelect);
+
+const sortOptions = [
+    { value: '', 
+        innerText: 'üres' 
+    },
+    { value: 'cim', 
+        innerText: 'cím' 
+    },
+    { value: 'szerzo',
+        innerText: 'szerző' 
+    }
+];
+
+for(const option of sortOptions){
+    const element = document.createElement('option');
+    element.value = option.value;
+    element.innerText = option.innerText;
+    sortSelect.appendChild(element);
+}
+
+const sortButton = document.createElement('button');
+sortButton.innerText = 'Rendezés';
+sortForm.appendChild(sortButton);
+
+const originalArray = [];
+
+const originalArrayFill = () => {
+    originalArray.length = 0;
+    for(const element of tomb) {
+        const alkotas = {
+            szerzo: element.szerzo,
+            mufaj: element.mufaj,
+            cim: element.cim
+        };
+        originalArray.push(alkotas);
+    }
+}
+
+const sortedTable = (data) => {
+    tbody.innerHTML = '';
+    for(const element of data){
+        const tr = document.createElement('tr');
+        tbody.appendChild(tr);
+
+        const szerzo = document.createElement('td');
+        szerzo.textContent = element.szerzo;
+        tr.appendChild(szerzo);
+
+        const mufaj = document.createElement('td');
+        mufaj.textContent = element.mufaj;
+        tr.appendChild(mufaj);
+
+        const cim = document.createElement('td');
+        cim.textContent = element.cim;
+        tr.appendChild(cim);
+    }
+}
+
+sortForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    let sortedArray = [];
+    if(sortSelect.value === '') {
+        sortedArray = originalArray.slice();
+    } else {
+        sortedArray = tomb.slice();
+        for(let i = 0; i < sortedArray.length - 1; i++) {
+            for(let j = 0; j < sortedArray.length - i - 1; j++) {
+                const a = (sortedArray[j][sortSelect.value] || '').toLowerCase();
+                const b = (sortedArray[j+1][sortSelect.value] || '').toLowerCase();
+                if(a > b) {
+                    const temp = sortedArray[j];
+                    sortedArray[j] = sortedArray[j+1];
+                    sortedArray[j+1] = temp;
+                }
+            }
+        }
+    }
+    sortedTable(sortedArray);
+});
+
+originalArrayFill();
