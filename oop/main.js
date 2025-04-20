@@ -17,4 +17,4 @@ const fieldElements = [{
 const manager = new Manager();
 const table = new Table("table",manager);
 const form = new Form("form",fieldElements, manager);
-const upload = new Upload("upload",manager);
+const upload = new UploadAndDownload("upload",manager);

@@ -31,4 +31,17 @@ class Manager{
         this.#array.push(data);
         this.#addAlkotasCallback(data);
     }
+
+
+    /**
+     * 
+     * @returns {string}
+     */
+    generateDownloadString(){
+        const result = ['szerzo;mufaj;cim']
+        for(const alkotas of this.#array){
+            result.push(`${alkotas.szerzo};${alkotas.mufaj};${alkotas.cim}`);
+        }
+        return result.join('\n');
+    }
 }
