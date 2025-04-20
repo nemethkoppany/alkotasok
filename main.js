@@ -159,5 +159,23 @@ input.addEventListener('change', (e) => {
        }
     }
     reader.readAsText(file);
-})
+});
+
+
+const downloadButton = document.createElement('button');
+downloadButton.textContent = 'Letöltés';
+containerDiv.appendChild(downloadButton);
+downloadButton.addEventListener('click', () => {
+    const link = document.createElement('a');
+    const contents = ['name;birth;zipcode']
+    for(const alkotas of tomb){
+        contents.push(`${alkotas.szerzo};${alkotas.mufaj};${alkotas.cim}`);
+    }
+    const content = contents.join('\n');
+    const blob = new Blob([content])
+    link.href = URL.createObjectURL(blob);
+    link.download = 'tovabbi_data.csv'
+    link.click();
+    URL.revokeObjectURL(link.href);
+});
 
