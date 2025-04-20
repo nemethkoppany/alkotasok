@@ -48,6 +48,17 @@ class Area{
         }
         return containerDiv;
     }
+
+    /**
+     * 
+     * @param {string} label 
+     * @returns {HTMLButtonElement}
+     */
+    createButton(label){
+        const button = document.createElement('button');
+        button.textContent = label;
+        return button
+    }
 }
 
 class Table extends Area{
@@ -59,46 +70,56 @@ class Table extends Area{
     constructor(nameOfTheClass, manager){
         super(nameOfTheClass, manager)
         const tbody = this.#tableCreation();
-        this.manager.setAddAlkotasCallback((data) => {
-            const tr = document.createElement('tr');
- 
-            const szerzo = document.createElement('td');
-            szerzo.textContent = data.szerzo;
-            tr.appendChild(szerzo);
-
-            const mufaj = document.createElement('td');
-            mufaj.textContent = data.mufaj;
-            tr.appendChild(mufaj);
- 
-            const cim  = document.createElement('td');
-            cim.textContent = data.cim;
-            tr.appendChild(cim);
-
-            tbody.appendChild(tr);
-        });
-
-        this.manager.setRenderTableCallback((array) => {
-            tbody.innerHTML = '';
-            for(const data of array){
-                this.#addAlkotasToRow(data, tbody)
-            }
-        });
+       this.manager.setAddAlkotasCallback(this.#addAlkotasallback(tbody));
+       this.manager.setRenderTableCallback(this.#renderTableCallback(tbody));
     }    
 
+     /**
+     * @param {HTMLTableSectionElement} tbody
+     * @returns {function(AlkotasData[]):void}
+     */
+    #renderTableCallback(tbody){
+        return (tomb) => {
+            tbody.innerHTML = '';
+            for(const alkotas of tomb){
+                this.#addAlkotasToRow(alkotas, tbody);
+            }
+        }
+    }
+
+     /**
+     * @param {HTMLTableSectionElement} tbody
+     * @returns {function(AlkotasData):void}
+     */
+    #addAlkotasallback(tbody){
+        return (alkotas) => {
+            this.#addAlkotasToRow(alkotas, tbody);
+        }
+    }
+
+     /**
+     * @param {AlkotasData} alkotas
+     * @param {HTMLTableSectionElement} tbody
+     */
     #addAlkotasToRow(alkotas, tbody){
         const tr = document.createElement('tr');
-                const szerzo = document.createElement('td');
-                szerzo.textContent = alkotas.szerzo;
-                tr.appendChild(szerzo);
-                const mufaj = document.createElement('td');
-                mufaj.textContent = alkotas.mufaj;
-                tr.appendChild(mufaj);
-                const cim  = document.createElement('td');
-                cim.textContent = alkotas.cim;
-                tr.appendChild(cim);
+              this.#createTD(tr, alkotas.szerzo);
+              this.#createTD(tr, alkotas.mufaj);
+              this.#createTD(tr, alkotas.cim);
                 tbody.appendChild(tr);
     }
 
+    /**
+     * 
+     * @param {HTMLTableRowElement} tr 
+     * @param {string} textContent 
+     * @param {HTMLElement} type 
+     */
+    #createTD(tr, textContent, type='td'){
+        const td = document.createElement(type);
+        td.textContent = textContent;
+        tr.appendChild(td);
+    }
     /**
      * 
      * @returns {HTMLTableSectionElement}
@@ -116,9 +137,7 @@ class Table extends Area{
 
         const theadCells = ['Szerző', 'műfaj', 'cím'];
         for(const content of theadCells){
-            const th = document.createElement('th');
-            th.innerText = content;
-            tr.appendChild(th);
+           this.#createTD(tr, content, "th");
         }
         const tbody = document.createElement('tbody');
         table.appendChild(tbody);
@@ -135,30 +154,58 @@ class Form extends Area {
 
     /**
      * @param {string} nameOfTheClass 
+     * @param {{fieldid: string, fieldLabel: string}[]} elementsOfField
      * @param {Manager} manager 
      * 
     */
     constructor(nameOfTheClass, elementsOfField, manager){
         super(nameOfTheClass, manager);   
         this.#formArray = []; 
-        const form = document.createElement('form');
-        this.div.appendChild(form);
- 
-        for(const element of elementsOfField){
-            const formField = new FormField(element.fieldid, element.fieldLabel);
-            this.#formArray.push(formField);
-            form.appendChild(formField.getDiv()); 
-        }
- 
-        const button = document.createElement('button');
-        button.textContent = 'Hozzáadás';
-        form.appendChild(button);
+        const form = this.#formCreation(elementsOfField);
+        form.addEventListener("submit",this.#formEventListener());
+        
+     
+    }
 
-        form.addEventListener('submit', (e)=> {
+     /**
+     * @param {{fieldid: string, fieldLabel: string}[]} fieldElements
+     * @returns {HTMLFormElement}
+     */
+    #formCreation(fieldElements){
+        const form = document.createElement('form');
+    this.div.appendChild(form);
+
+    for(const element of fieldElements){
+        const formField = new FormField(element.fieldid, element.fieldLabel);
+        this.#formArray.push(formField);
+        form.appendChild(formField.getDiv()); 
+    }
+
+    const button = this.createButton("Hozzáadás");
+    form.appendChild(button);
+    return form;
+}
+
+    /**
+     * @returns {function(Event):void}
+     */
+    #formEventListener(){
+        return (e) =>{
             e.preventDefault();
 
-            const contentObject = {};
+            if(this.#fieldValidator()){
+                const contentObject = this.#getContentObject();
+                const alkotas = new AlkotasData(contentObject.szerzo, contentObject.mufaj, contentObject.cim);
+                this.manager.addData(alkotas);
+               }
+        }
+    }
 
+    /**
+     * 
+     * @returns {boolean}
+     */
+    #fieldValidator(){
             let isValid = true;
             for(const formField of this.#formArray){
                 formField.error = '';
@@ -166,14 +213,21 @@ class Form extends Area {
                     formField.error = 'Kötelező megadni';
                     isValid = false;
                 }
-                contentObject[formField.id] = formField.value;
+               
             }
+            return isValid;
+    }
 
-           if(isValid){
-            const alkotas = new AlkotasData(contentObject.szerzo, contentObject.mufaj, contentObject.cim);
-            this.manager.addData(alkotas);
-           }
-        })
+    /**
+     * 
+     * @returns {{ szerzo: string, mufaj: string, cim: string }} 
+     */
+    #getContentObject(){
+        const contentObject = {};
+        for(const fieldOfForm of this.#formArray){
+            contentObject[fieldOfForm.id] = fieldOfForm.value;
+        }
+        return contentObject;
     }
 }
 
@@ -189,8 +243,34 @@ class UploadAndDownload extends Area{
         input.id ='fileinput';
         input.type ='file'
         this.div.appendChild(input);
+        input.addEventListener("change",this.#uploadEventListener());
+        const downloadButton = this.createButton("Letöltés");
+        this.div.appendChild(downloadButton);
+        downloadButton.addEventListener("click", this.#downloadEventListener());
 
-        input.addEventListener('change', (e)=>{
+       
+    }
+
+    /**
+     * @returns {function():void}
+     */
+    #downloadEventListener(){
+        return () =>{
+            const link = document.createElement('a');
+            const content = this.manager.generateDownloadString();
+            const blob = new Blob([content])
+            link.href = URL.createObjectURL(blob);
+            link.download = 'ujabb_data.csv'
+            link.click();
+            URL.revokeObjectURL(link.href);
+        }
+    }
+
+      /**
+     * @returns {function(Event):void}
+     */
+    #uploadEventListener(){
+        return (e) =>{
             const file = e.target.files[0];
             const reader = new FileReader();
             reader.onload = () => {
@@ -204,21 +284,7 @@ class UploadAndDownload extends Area{
                }
             }
             reader.readAsText(file);
-        })
-
-        const downloadButton = document.createElement('button');
-        downloadButton.textContent = 'Letöltés';
-        this.div.appendChild(downloadButton);
-
-        downloadButton.addEventListener('click', () => {
-            const link = document.createElement('a');
-            const content = this.manager.generateDownloadString();
-            const blob = new Blob([content])
-            link.href = URL.createObjectURL(blob);
-            link.download = 'ujabb_data.csv'
-            link.click();
-            URL.revokeObjectURL(link.href);
-        });
+        }
     }
 }
 
@@ -234,21 +300,21 @@ class FormField {
 
     /**
     * 
-     * @type {HTMLElement}
+     * @type {HTMLInputElement}
     */
     #inputElement;
  
 
      /**
     * 
-     * @type {HTMLElement}
+     * @type {HTMLLabelElement}
     */
     #labelElement;
  
 
      /**
     * 
-     * @type {HTMLElement}
+     * @type {HTMLSpanElement}
     */
     #errorElement;
 
@@ -267,7 +333,7 @@ class FormField {
     }
  
     /**
-     * @param {string}
+     * @param {string} value
      */
     set error(value){
         this.#errorElement.textContent = value;
@@ -292,6 +358,10 @@ class FormField {
         this.#errorElement.className = 'error';
     }
 
+    /**
+     * 
+     * @returns {HTMLDivElement}
+     */
     getDiv(){
         const div = divmaker('field');
         const break1 = document.createElement('br')

@@ -7,12 +7,12 @@ class Manager{
     #array;
 
     /**
-     * @type {addAlkotasCallback}
+     * @type {function(AlkotasData):void}
      */
     #addAlkotasCallback;
 
     /**
-     * @type {renderTableCallback}
+     * @type {function(AlkotasData[]):void}}
      */
     #renderTableCallback
  
@@ -22,12 +22,16 @@ class Manager{
  
     /**
      * 
-     * @param {function} callback 
+     * @param {function(AlkotasData):void} callback 
      */
     setAddAlkotasCallback(callback){
         this.#addAlkotasCallback = callback;
     }
 
+     /**
+     * 
+     * @param {function(AlkotasData[]):void} callback 
+     */
     setRenderTableCallback(callback) {
         this.#renderTableCallback = callback;
     }
@@ -53,6 +57,9 @@ class Manager{
         return result.join('\n');
     }
 
+    /**
+     * @param {function(AlkotasData):boolean} callback 
+     */
     filter(callback){
         const result = [];
         for(const alkotas of this.#array){
@@ -60,16 +67,21 @@ class Manager{
                 result.push(alkotas);
             }
         }
-        if (this.#renderTableCallback) this.#renderTableCallback(result);
+        if (this.#renderTableCallback){ 
+            this.#renderTableCallback(result);
+        }
     }
 
 
+     /** 
+     * @param {string} sorter 
+     */
     sort(sorter) {
         const arr = this.#array.slice();
         for (let i = 0; i < arr.length - 1; i++) {
             for (let j = 0; j < arr.length - i - 1; j++) {
-                const a = (arr[j][sorter] || '').toLowerCase();
-                const b = (arr[j + 1][sorter] || '').toLowerCase();
+                const a = (arr[j][sorter]).toLowerCase();
+                const b = (arr[j + 1][sorter]).toLowerCase();
                 if (a > b) {
                     const temp = arr[j];
                     arr[j] = arr[j + 1];
@@ -77,6 +89,8 @@ class Manager{
                 }
             }
         }
-        if (this.#renderTableCallback) this.#renderTableCallback(arr);
+        if (this.#renderTableCallback) {
+            this.#renderTableCallback(arr);
+        }
     }
 }

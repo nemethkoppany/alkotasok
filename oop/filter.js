@@ -1,4 +1,9 @@
 class SortForm extends Area {
+    /**
+     * 
+     * @param {string} nameOfTheClass 
+     * @param {Manager} manager 
+     */
     constructor(nameOfTheClass, manager) {
         super(nameOfTheClass, manager);
 
@@ -9,9 +14,18 @@ class SortForm extends Area {
         form.appendChild(select);
 
         const options = [
-            { value: '', innerText: 'üres' },
-            { value: 'cim', innerText: 'cím' },
-            { value: 'szerzo', innerText: 'szerző' }
+            { 
+                value: '', 
+                innerText: 'üres' 
+            },
+            { 
+                value: 'cim', 
+                innerText: 'cím' 
+            },
+            { 
+                value: 'szerzo', 
+                innerText: 'szerző' 
+            }
         ];
         for (const option of options) {
             const optionElement = document.createElement('option');
@@ -20,8 +34,7 @@ class SortForm extends Area {
             select.appendChild(optionElement);
         }
 
-        const button = document.createElement('button');
-        button.innerText = 'Rendezés';
+        const button = this.createButton("Szűrés")
         form.appendChild(button);
 
         form.addEventListener('submit', (e) => {

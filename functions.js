@@ -1,4 +1,12 @@
 /**
+ * @typedef {Object} Alkotas
+ */
+
+
+
+
+
+/**
  * 
  * @param {string} Classname 
  * @returns {HTMLDivElement}
@@ -9,10 +17,17 @@ const divmaker = (Classname) =>{
     return div;
 }
 
+/**
+ * @param {Alkotas}
+ */
  tombPush= (obj) =>  {
     tomb.push(obj);
 }
-
+/**
+ * 
+ * @param {HTMLDivElement} container 
+ * @param {function(HTMLTableSectionElement):void} callback 
+ */
 const createTable = (container, callback) => {
     const tableDiv = divmaker('table');
     container.appendChild(tableDiv);
@@ -37,6 +52,11 @@ const createTable = (container, callback) => {
     callback(tbody);
 }
 
+/**
+ * @param {HTMLTableSectionElement} tbody
+ * @param {HTMLElement} container
+ * @param {Alkotas[]} alkotasArray 
+ */
 const uploads = (tbody, container, alkotasArray) => {
 
     const fileInput = document.createElement('input')
@@ -65,6 +85,12 @@ const uploads = (tbody, container, alkotasArray) => {
         reader.readAsText(file);
     });
 };
+
+/**
+ * @param {HTMLTableSectionElement} tbody
+ * @param {HTMLElement} container
+ * @param {Alkotas[]} alkotasArray 
+ */
 const formCreation = (tbody, container, alkotasArray) => {
     const formDiv = divmaker('form');
     container.appendChild(formDiv);
@@ -134,6 +160,10 @@ const formCreation = (tbody, container, alkotasArray) => {
     })
 }
 
+/**
+ * @param {Alkotas} object
+ * @param {HTMLTableSectionElement} tbody
+ */
 const addRow = (object, tbody) => {
 
     const tr = document.createElement('tr');
@@ -152,6 +182,10 @@ const addRow = (object, tbody) => {
     tr.appendChild(cim);
 }
 
+/**
+ * @param {HTMLElement} container
+ * @param {Alkotas[]} alkotasArray 
+ */
 const downloads = (container, alkotasArray) => {
 
     const downloadButton = document.createElement('button');
@@ -175,7 +209,12 @@ const downloads = (container, alkotasArray) => {
 }
 
 
-
+/**
+ * @param {HTMLTableSectionElement} tbody
+ * @param {HTMLElement} containerDiv
+ * @param {Alkotas[]} tomb 
+ * @returns {{ originalArrayFill: function():void, sortedTable: function(Alkotas[]):void }}
+ */
 const sortForm = (tbody, containerDiv, tomb) => {
     const sortFormDiv = divmaker('sortForm');
     containerDiv.appendChild(sortFormDiv);
@@ -223,6 +262,9 @@ const sortForm = (tbody, containerDiv, tomb) => {
         }
     }
 
+    /** 
+     * @param {Alkotas[]} data
+     */
     const sortedTable = (data) => {
         tbody.innerHTML = '';
         for(const element of data){
@@ -253,8 +295,8 @@ const sortForm = (tbody, containerDiv, tomb) => {
             sortedArray = tomb.slice();
             for(let i = 0; i < sortedArray.length - 1; i++) {
                 for(let j = 0; j < sortedArray.length - i - 1; j++) {
-                    const a = (sortedArray[j][sortSelect.value] || '').toLowerCase();
-                    const b = (sortedArray[j+1][sortSelect.value] || '').toLowerCase();
+                    const a = (sortedArray[j][sortSelect.value]).toLowerCase();
+                    const b = (sortedArray[j+1][sortSelect.value]).toLowerCase();
                     if(a > b) {
                         const temp = sortedArray[j];
                         sortedArray[j] = sortedArray[j+1];

@@ -1,7 +1,5 @@
 const tomb = [];
 
-
-
 const containerDiv = divmaker("container");
 document.body.appendChild(containerDiv);
 createTable(containerDiv, (tbody) =>{
