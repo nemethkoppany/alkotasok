@@ -1,5 +1,18 @@
 const separator = document.createElement('hr'); // hogy a html-en egyszeruen megtalalhato legyen az elvalaszto oop es sima kozott
 document.body.appendChild(separator);
 
+const fieldElements = [{
+    fieldid: 'szerzo',
+    fieldLabel: 'Szerző'
+},
+{
+    fieldid: 'mufaj',
+    fieldLabel: 'Műfaj'
+},
+{
+    fieldid: 'cim',
+    fieldLabel: 'Cím'
+}]
+
 const table = new Table("table");
-const form = new Form("form");
+const form = new Form("form",fieldElements);

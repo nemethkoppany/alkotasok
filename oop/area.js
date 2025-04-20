@@ -17,16 +17,19 @@ class Area{
      * @param {string} nameOfTheClass 
      */
     constructor(nameOfTheClass){
-        let containerDiv = document.querySelector(".containeroop");
+        const container = this.#getDivForContainer();
+        this.#div = document.createElement('div');
+        this.#div.className = nameOfTheClass;
+        container.appendChild(this.#div);
+    }
+    #getDivForContainer(){
+        let containerDiv = document.querySelector('.containeroop');
         if(!containerDiv){
-            containerDiv = document.createElement("div");
-            containerDiv.className = "containeroop";
+            containerDiv = document.createElement('div');
+            containerDiv.className = 'containeroop';
             document.body.appendChild(containerDiv);
         }
-
-        this.#div = document.createElement("div");
-        this.#div.className = nameOfTheClass;
-        containerDiv.appendChild(this.#div);
+        return containerDiv;
     }
 }
 
@@ -37,7 +40,10 @@ class Table extends Area{
      */
     constructor(nameOfTheClass){
         super(nameOfTheClass)
+        const tbody = this.#tableCreation();
+    }    
 
+    #tableCreation(){
         const table = document.createElement('table');
         this.div.appendChild(table);
  
@@ -56,7 +62,8 @@ class Table extends Area{
         }
         const tbody = document.createElement('tbody');
         table.appendChild(tbody);
-    }    
+        return tbody;
+    }
 }
 
 class Form extends Area {
@@ -64,23 +71,10 @@ class Form extends Area {
      * 
      * @param {string} nameOfTheClass 
      */
-    constructor(nameOfTheClass){
+    constructor(nameOfTheClass, elementsOfField){
         super(nameOfTheClass);    
         const form = document.createElement('form');
         this.div.appendChild(form);
- 
-        const elementsOfField = [{
-            fieldid: 'szerzo',
-            fieldLabel: 'Szerző'
-        },
-        {
-            fieldid: 'mufaj',
-            fieldLabel: 'Műfaj'
-        },
-        {
-            fieldid: 'cim',
-            fieldLabel: 'Cím'
-        }]
  
         for(const element of elementsOfField){
  
