@@ -56,7 +56,50 @@ class Table extends Area{
         }
         const tbody = document.createElement('tbody');
         table.appendChild(tbody);
-    }
+    }    
+}
 
-    
+class Form extends Area {
+    /**
+     * 
+     * @param {string} nameOfTheClass 
+     */
+    constructor(nameOfTheClass){
+        super(nameOfTheClass);    
+        const form = document.createElement('form');
+        this.div.appendChild(form);
+ 
+        const elementsOfField = [{
+            fieldid: 'szerzo',
+            fieldLabel: 'Szerző'
+        },
+        {
+            fieldid: 'mufaj',
+            fieldLabel: 'Műfaj'
+        },
+        {
+            fieldid: 'cim',
+            fieldLabel: 'Cím'
+        }]
+ 
+        for(const element of elementsOfField){
+ 
+            const fieldDiv = divmaker('field');
+            form.appendChild(fieldDiv);
+
+            const label = document.createElement('label');
+            label.htmlFor = element.fieldid;
+            label.textContent = element.fieldLabel;
+            fieldDiv.appendChild(label)
+ 
+            const input = document.createElement('input');
+            input.id = element.fieldid;
+            fieldDiv.appendChild(document.createElement('br'))
+            fieldDiv.appendChild(input);
+        }
+ 
+        const button = document.createElement('button');
+        button.textContent = 'Hozzáadás';
+        form.appendChild(button)
+    }
 }
