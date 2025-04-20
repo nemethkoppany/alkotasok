@@ -156,6 +156,33 @@ class Form extends Area {
     }
 }
 
+class Upload extends Area{
+    constructor(nameOfTheClass, manager){
+        super(nameOfTheClass, manager);
+        const input = document.createElement('input')
+        input.id ='fileinput';
+        input.type ='file'
+        this.div.appendChild(input);
+
+        input.addEventListener('change', (e)=>{
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onload = () => {
+               const Lines = reader.result.split('\n')
+               const headerRemoved = Lines.slice(1);
+               for(const line of headerRemoved){
+                    const trimmed = line.trim();
+                    const fields = trimmed.split(';');
+                    const alkotas = new AlkotasData(fields[0], fields[2], fields[1]);
+                    this.manager.addData(alkotas);
+               }
+            }
+            reader.readAsText(file);
+        })
+    }
+}
+
+
 class FormField {
 
     /**
