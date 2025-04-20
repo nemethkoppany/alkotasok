@@ -14,5 +14,6 @@ const fieldElements = [{
     fieldLabel: 'Cím'
 }]
 
-const table = new Table("table");
-const form = new Form("form",fieldElements);
+const manager = new Manager();
+const table = new Table("table",manager);
+const form = new Form("form",fieldElements, manager);

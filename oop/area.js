@@ -6,6 +6,17 @@ class Area{
     #div
 
     /**
+     * @type {Manager}
+     */
+    #manager
+
+    /**
+     * @returns {Manager}
+     */
+    get manager(){
+        return this.#manager;
+    }
+    /**
      * @returns {HTMLDivElement}
      */
     get div(){
@@ -15,13 +26,19 @@ class Area{
     /**
      * 
      * @param {string} nameOfTheClass 
+     * @param {Manager} manager
      */
-    constructor(nameOfTheClass){
+    constructor(nameOfTheClass, manager){
+        this.#manager = manager;
         const container = this.#getDivForContainer();
         this.#div = document.createElement('div');
         this.#div.className = nameOfTheClass;
         container.appendChild(this.#div);
     }
+    /**
+     * 
+     * @returns {HTMLDivElement}
+     */
     #getDivForContainer(){
         let containerDiv = document.querySelector('.containeroop');
         if(!containerDiv){
@@ -37,12 +54,34 @@ class Table extends Area{
     /**
      * 
      * @param {string} nameOfTheClass 
+     * @param {Manager} manager
      */
-    constructor(nameOfTheClass){
-        super(nameOfTheClass)
+    constructor(nameOfTheClass, manager){
+        super(nameOfTheClass, manager)
         const tbody = this.#tableCreation();
+        this.manager.setAddAlkotasCallback((data) => {
+            const tr = document.createElement('tr');
+ 
+            const szerzo = document.createElement('td');
+            szerzo.textContent = data.szerzo;
+            tr.appendChild(szerzo);
+
+            const mufaj = document.createElement('td');
+            mufaj.textContent = data.mufaj;
+            tr.appendChild(mufaj);
+ 
+            const cim  = document.createElement('td');
+            cim.textContent = data.cim;
+            tr.appendChild(cim);
+
+            tbody.appendChild(tr);
+        })
     }    
 
+    /**
+     * 
+     * @returns {HTMLTableSectionElement}
+     */
     #tableCreation(){
         const table = document.createElement('table');
         this.div.appendChild(table);
@@ -68,11 +107,12 @@ class Table extends Area{
 
 class Form extends Area {
     /**
-     * 
      * @param {string} nameOfTheClass 
-     */
-    constructor(nameOfTheClass, elementsOfField){
-        super(nameOfTheClass);    
+     * @param {Manager} manager 
+     * 
+    */
+    constructor(nameOfTheClass, elementsOfField, manager){
+        super(nameOfTheClass, manager);    
         const form = document.createElement('form');
         this.div.appendChild(form);
  
@@ -94,6 +134,20 @@ class Form extends Area {
  
         const button = document.createElement('button');
         button.textContent = 'Hozzáadás';
-        form.appendChild(button)
+        form.appendChild(button);
+
+        form.addEventListener('submit', (e)=> {
+            e.preventDefault();
+
+            const inputFields = e.target.querySelectorAll('input');
+            const contentObject = {};
+
+            for(const inputField of inputFields){
+                contentObject[inputField.id] = inputField.value;
+            }
+
+            const alkotas = new AlkotasData(contentObject.szerzo, contentObject.mufaj, contentObject.cim);
+            this.manager.addData(alkotas);
+        })
     }
 }
