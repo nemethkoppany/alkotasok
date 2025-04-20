@@ -136,15 +136,22 @@ class Form extends Area {
         form.addEventListener('submit', (e)=> {
             e.preventDefault();
 
-            const inputFields = e.target.querySelectorAll('input');
             const contentObject = {};
 
-            for(const inputField of inputFields){
-                contentObject[inputField.id] = inputField.value;
+            let isValid = true;
+            for(const formField of this.#formArray){
+                formField.error = '';
+                if(formField.value === ''){
+                    formField.error = 'Kötelező megadni';
+                    isValid = false;
+                }
+                contentObject[formField.id] = formField.value;
             }
 
+           if(isValid){
             const alkotas = new AlkotasData(contentObject.szerzo, contentObject.mufaj, contentObject.cim);
             this.manager.addData(alkotas);
+           }
         })
     }
 }
