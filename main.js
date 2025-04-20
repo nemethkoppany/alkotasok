@@ -1,3 +1,4 @@
+const tomb = [];
 /**
  * 
  * @param {string} Classname 
@@ -69,8 +70,33 @@ for(const fieldElement of fieldElementList){
 }
  
 const buttonFormRefular = document.createElement('button');
-buttonFormRefular.textContent = 'hozzáadás';
+buttonFormRefular.textContent = 'Hozzáadás';
 formRegular.appendChild(buttonFormRefular)
+
+formRegular.addEventListener('submit', (e)=> {
+    e.preventDefault();
+
+    const contentObject = {}
+    const fieldInputs = e.target.querySelectorAll('input');
+    for(const fieldinput of fieldInputs){
+        contentObject[fieldinput.id] = fieldinput.value;
+    }
+    tomb.push(contentObject);
+    const tr = document.createElement('tr');
+    tbody.appendChild(tr);
+ 
+    const szerzo = document.createElement('td');
+    szerzo.textContent = contentObject.szerzo;
+    tr.appendChild(szerzo);
+ 
+    const mufaj = document.createElement('td');
+    mufaj.textContent = contentObject.mufaj;
+    tr.appendChild(mufaj);
+
+    const cim = document.createElement('td');
+    cim.textContent = contentObject.cim;
+    tr.appendChild(cim);
+})
 
 containerDiv.appendChild(tableDiv);
 containerDiv.appendChild(formDiv);
