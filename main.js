@@ -55,18 +55,20 @@ const fieldElementList = [{
 for(const fieldElement of fieldElementList){
     const field = divmaker('field');
     formRegular.appendChild(field);
-
+    field.appendChild(document.createElement("br"));
     const label = document.createElement('label');
     label.htmlFor = fieldElement.fieldid;
     label.textContent = fieldElement.fieldLabel;
     field.appendChild(label)
- 
+    field.appendChild(document.createElement('br'))
     const input = document.createElement('input');
     input.id = fieldElement.fieldid;
- 
-    field.appendChild(document.createElement('br'))
-
     field.appendChild(input)
+
+    field.appendChild(document.createElement('br'))
+    const error = document.createElement('span');
+    error.className = 'error';
+    field.appendChild(error);
 }
  
 const buttonFormRefular = document.createElement('button');
@@ -78,24 +80,38 @@ formRegular.addEventListener('submit', (e)=> {
 
     const contentObject = {}
     const fieldInputs = e.target.querySelectorAll('input');
+    let isValid = true;
     for(const fieldinput of fieldInputs){
+        const error = fieldinput.parentElement.querySelector('.error');
+        if(!error){
+            console.error('Nincs errorField');
+            return;
+        }
+        error.textContent = '';
+        if(fieldinput.value === ''){
+            error.textContent = 'Kötelező megadni';
+            isValid = false;
+        }
         contentObject[fieldinput.id] = fieldinput.value;
     }
-    tomb.push(contentObject);
-    const tr = document.createElement('tr');
-    tbody.appendChild(tr);
- 
-    const szerzo = document.createElement('td');
-    szerzo.textContent = contentObject.szerzo;
-    tr.appendChild(szerzo);
- 
-    const mufaj = document.createElement('td');
-    mufaj.textContent = contentObject.mufaj;
-    tr.appendChild(mufaj);
-
-    const cim = document.createElement('td');
-    cim.textContent = contentObject.cim;
-    tr.appendChild(cim);
+   
+    if(isValid){
+        tomb.push(contentObject);
+        const tr = document.createElement('tr');
+        tbody.appendChild(tr);
+     
+        const szerzo = document.createElement('td');
+        szerzo.textContent = contentObject.szerzo;
+        tr.appendChild(szerzo);
+     
+        const mufaj = document.createElement('td');
+        mufaj.textContent = contentObject.mufaj;
+        tr.appendChild(mufaj);
+    
+        const cim = document.createElement('td');
+        cim.textContent = contentObject.cim;
+        tr.appendChild(cim);
+    }
 })
 
 containerDiv.appendChild(tableDiv);

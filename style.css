@@ -41,3 +41,8 @@ table, tr, th, td {
     border-collapse: collapse;
  
 }
+
+.error{
+    color: red;
+    font-weight: bold;
+}
