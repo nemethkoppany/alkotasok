@@ -106,30 +106,27 @@ class Table extends Area{
 }
 
 class Form extends Area {
+
+    /**
+     * @type {FormField[]}
+     */
+    #formArray
+
     /**
      * @param {string} nameOfTheClass 
      * @param {Manager} manager 
      * 
     */
     constructor(nameOfTheClass, elementsOfField, manager){
-        super(nameOfTheClass, manager);    
+        super(nameOfTheClass, manager);   
+        this.#formArray = []; 
         const form = document.createElement('form');
         this.div.appendChild(form);
  
         for(const element of elementsOfField){
- 
-            const fieldDiv = divmaker('field');
-            form.appendChild(fieldDiv);
-
-            const label = document.createElement('label');
-            label.htmlFor = element.fieldid;
-            label.textContent = element.fieldLabel;
-            fieldDiv.appendChild(label)
- 
-            const input = document.createElement('input');
-            input.id = element.fieldid;
-            fieldDiv.appendChild(document.createElement('br'))
-            fieldDiv.appendChild(input);
+            const formField = new FormField(element.fieldid, element.fieldLabel);
+            this.#formArray.push(formField);
+            form.appendChild(formField.getDiv()); 
         }
  
         const button = document.createElement('button');
@@ -149,5 +146,86 @@ class Form extends Area {
             const alkotas = new AlkotasData(contentObject.szerzo, contentObject.mufaj, contentObject.cim);
             this.manager.addData(alkotas);
         })
+    }
+}
+
+class FormField {
+
+    /**
+    * 
+     * @type {string}
+    */
+    #id;
+ 
+
+    /**
+    * 
+     * @type {HTMLElement}
+    */
+    #inputElement;
+ 
+
+     /**
+    * 
+     * @type {HTMLElement}
+    */
+    #labelElement;
+ 
+
+     /**
+    * 
+     * @type {HTMLElement}
+    */
+    #errorElement;
+
+    /**
+     * @returns {string}
+     */
+    get id(){
+        return this.#id;
+    }
+ 
+    /**
+     * @returns {string}
+     */
+    get value(){
+        return this.#inputElement.value;
+    }
+ 
+    /**
+     * @param {string}
+     */
+    set error(value){
+        this.#errorElement.textContent = value;
+    }
+
+    /**
+     * 
+     * @param {string} id 
+     * @param {string} labelContent 
+     */
+    constructor(id, labelContent){
+        this.#id = id;
+
+        this.#labelElement = document.createElement('label');
+        this.#labelElement.htmlFor = id;
+        this.#labelElement.textContent = labelContent;
+
+        this.#inputElement = document.createElement('input');
+        this.#inputElement.id = id;
+
+        this.#errorElement = document.createElement('span');
+        this.#errorElement.className = 'error';
+    }
+
+    getDiv(){
+        const div = divmaker('field');
+        const break1 = document.createElement('br')
+        const break2 = document.createElement('br')
+        const elements = [this.#labelElement, break1, this.#inputElement, break2, this.#errorElement];
+        for(const element of elements){
+            div.appendChild(element); 
+        }
+        return div;
     }
 }
