@@ -18,3 +18,4 @@ const manager = new Manager();
 const table = new Table("table",manager);
 const form = new Form("form",fieldElements, manager);
 const upload = new UploadAndDownload("upload",manager);
+const sortedForm = new SortForm("sortForm",manager);

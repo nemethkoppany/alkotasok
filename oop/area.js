@@ -75,8 +75,29 @@ class Table extends Area{
             tr.appendChild(cim);
 
             tbody.appendChild(tr);
-        })
+        });
+
+        this.manager.setRenderTableCallback((array) => {
+            tbody.innerHTML = '';
+            for(const data of array){
+                this.#addAlkotasToRow(data, tbody)
+            }
+        });
     }    
+
+    #addAlkotasToRow(alkotas, tbody){
+        const tr = document.createElement('tr');
+                const szerzo = document.createElement('td');
+                szerzo.textContent = alkotas.szerzo;
+                tr.appendChild(szerzo);
+                const mufaj = document.createElement('td');
+                mufaj.textContent = alkotas.mufaj;
+                tr.appendChild(mufaj);
+                const cim  = document.createElement('td');
+                cim.textContent = alkotas.cim;
+                tr.appendChild(cim);
+                tbody.appendChild(tr);
+    }
 
     /**
      * 
