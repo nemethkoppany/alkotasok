@@ -1,5 +1,5 @@
 /**
- * @typedef {Object} Alkotas
+ * @typedef {{szerzo: string, mumfaj: string, cim: string}} Alkotas
  */
 
 
@@ -309,5 +309,4 @@ const sortForm = (tbody, containerDiv, tomb) => {
     });
 
     originalArrayFill();
-    return { originalArrayFill, sortedTable };
 }

@@ -67,30 +67,29 @@ class Manager{
                 result.push(alkotas);
             }
         }
-        if (this.#renderTableCallback){ 
-            this.#renderTableCallback(result);
-        }
+        this.#renderTableCallback(result);
     }
 
 
-     /** 
-     * @param {string} sorter 
+    renderOriginal() {
+        this.#renderTableCallback(this.#array.slice());
+    }
+
+    /**
+     * 
+     * @param {(alkotas1: AlkotasData, alkotas2: AlkotasData) => number} sorter 
      */
     sort(sorter) {
         const arr = this.#array.slice();
         for (let i = 0; i < arr.length - 1; i++) {
             for (let j = 0; j < arr.length - i - 1; j++) {
-                const a = (arr[j][sorter]).toLowerCase();
-                const b = (arr[j + 1][sorter]).toLowerCase();
-                if (a > b) {
+                if (sorter(arr[j], arr[j + 1]) > 0) {
                     const temp = arr[j];
                     arr[j] = arr[j + 1];
                     arr[j + 1] = temp;
                 }
             }
         }
-        if (this.#renderTableCallback) {
-            this.#renderTableCallback(arr);
-        }
+        this.#renderTableCallback(arr);
     }
 }

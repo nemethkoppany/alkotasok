@@ -41,9 +41,21 @@ class SortForm extends Area {
             e.preventDefault();
             const sortedValue = select.value;
             if (sortedValue === '') {
-                manager.filter(() => true);
+                manager.renderOriginal();
             } else {
-                manager.sort(sortedValue);
+                manager.sort((alkotas1, alkotas2) => {
+                    const value1 = (alkotas1[sortedValue]).toLowerCase();
+                    const value2 = (alkotas2[sortedValue]).toLowerCase();
+                    if (value1 < value2) {
+                        return -1
+                    };
+                    if (value1 > value2) {
+                        return 1
+                    }
+                    else{
+                    return 0;
+                    }
+                });
             }
         });
     }
